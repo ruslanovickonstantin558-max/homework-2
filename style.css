@@ -1,0 +1,51 @@
+body {
+    background-color: #f4f4f9;
+    color: #333333;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 25px;
+    margin: 0 auto;
+    width: 400px;
+}
+
+.form-container {
+    background-color: #fafafa;
+    border: 1px dashed #aaaaaa;
+    padding: 15px;
+    margin: 20px 0 0 0; /* Обязательный внешний промежуток между карточкой/контентом и формой */
+}
+
+.checkbox-group {
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.error-box {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    padding: 10px;
+    margin: 15px 0;
+}
+
+.result-box {
+    background-color: #e6f7ff;
+    border: 1px solid #1890ff;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.json-box {
+    background-color: #f5f5f5;
+    border: 1px solid #d9d9d9;
+    padding: 10px;
+    margin: 15px 0;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
