@@ -13,9 +13,9 @@ const sourceJson = `{
   ]
 }`;
 
-// Функция расчета отчета по выбранным услугам
+// Функция расчета отчета по выбранным услугам (согласно ТЗ)
 function buildReport(services, guideChecked, audioChecked, catalogChecked) {
-    // 1. Используем filter для отбора услуг на основе переданных флагов
+    // 1. Отбор услуг через filter
     const filteredServices = services.filter(function(service) {
         if (service.id === 'guide') return guideChecked;
         if (service.id === 'audio') return audioChecked;
@@ -23,7 +23,7 @@ function buildReport(services, guideChecked, audioChecked, catalogChecked) {
         return false;
     });
 
-    // 2. Используем map для создания нового массива объектов с деструктуризацией и очисткой trim()
+    // 2. Создание нового массива объектов через map с одноуровневой деструктуризацией и trim()
     const items = filteredServices.map(function(service) {
         const { title, price } = service;
         return {
@@ -32,12 +32,11 @@ function buildReport(services, guideChecked, audioChecked, catalogChecked) {
         };
     });
 
-    // 3. Считаем сумму через reduce
+    // 3. Подсчет суммы через reduce
     const total = items.reduce(function(sum, item) {
         return sum + item.price;
     }, 0);
 
-    // Возвращаем объект отчета
     return {
         count: items.length,
         total: total,
@@ -45,10 +44,7 @@ function buildReport(services, guideChecked, audioChecked, catalogChecked) {
     };
 }
 
-// Переменная для хранения распарсенных данных
-let data = null;
-
-// Находим элементы интерфейса через querySelector по id
+// Нахождение всех необходимых DOM-элементов интерфейса по их ID
 const eventTitle = document.querySelector('#event-title');
 const eventDate = document.querySelector('#event-date');
 const eventPlace = document.querySelector('#event-place');
@@ -69,33 +65,36 @@ const guideCheckbox = document.querySelector('#guide');
 const audioCheckbox = document.querySelector('#audio');
 const catalogCheckbox = document.querySelector('#catalog');
 
-// Безопасный парсинг JSON в try...catch
+let data = null;
+
+// Безопасный разбор JSON в конструкции try...catch
 try {
     data = JSON.parse(sourceJson);
 
-    // Заполнение данных о событии в карточке
+    // Заполнение текстовых полей карточки события
     eventTitle.textContent = data.event.title;
     eventDate.textContent = data.event.date;
     eventPlace.textContent = data.event.place;
     eventDescription.textContent = data.event.description;
 
-    // Динамическое заполнение названий чекбоксов из данных (с очисткой крайних пробелов)
+    // Интеграция названий и цен услуг в соответствующие чекбоксы
     data.services.forEach(function(service) {
-        if (service.id === 'guide') labelGuide.textContent = service.title.trim() + ' (' + service.price + ' руб.)';
-        if (service.id === 'audio') labelAudio.textContent = service.title.trim() + ' (' + service.price + ' руб.)';
-        if (service.id === 'catalog') labelCatalog.textContent = service.title.trim() + ' (' + service.price + ' руб.)';
+        const cleanTitle = service.title.trim();
+        if (service.id === 'guide') labelGuide.textContent = cleanTitle + ' (' + service.price + ' руб.)';
+        if (service.id === 'audio') labelAudio.textContent = cleanTitle + ' (' + service.price + ' руб.)';
+        if (service.id === 'catalog') labelCatalog.textContent = cleanTitle + ' (' + service.price + ' руб.)';
     });
 
-    // Показываем форму, так как JSON корректен
+    // Показываем форму, так как данные распарсились успешно
     serviceForm.hidden = false;
 
 } catch (e) {
-    // В случае ошибки парсинга — скрываем форму и показываем ошибку данных
+    // При ошибке парсинга скрываем форму и выводим ошибку данных в data-error
     dataError.hidden = false;
     serviceForm.hidden = true;
 }
 
-// Обработчик для кнопки "Показать программу"
+// Передача обработчика клика в addEventListener без вызова
 showProgramBtn.addEventListener('click', function() {
     if (data) {
         programBlock.innerHTML = data.event.meeting;
@@ -103,16 +102,16 @@ showProgramBtn.addEventListener('click', function() {
     }
 });
 
-// Обработчик отправки формы расчета стоимости
+// Передача обработчика отправки формы расчета в addEventListener без вызова
 serviceForm.addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Предотвращаем перезагрузку страницы
 
-    // Читаем состояние чекбоксов
+    // Чтение свойств checked у чекбоксов
     const guideChecked = guideCheckbox.checked;
     const audioChecked = audioCheckbox.checked;
     const catalogChecked = catalogCheckbox.checked;
 
-    // Проверка на пустой выбор
+    // Валидация на пустой выбор
     if (!guideChecked && !audioChecked && !catalogChecked) {
         choiceError.hidden = false;
         resultBlock.hidden = true;
@@ -120,13 +119,13 @@ serviceForm.addEventListener('submit', function(event) {
         return;
     }
 
-    // Если выбор не пустой, скрываем ошибку
+    // Скрываем ошибку выбора, если хоть один чекбокс активен
     choiceError.hidden = true;
 
-    // Генерируем отчет
+    // Вызов функции генерации отчета
     const report = buildReport(data.services, guideChecked, audioChecked, catalogChecked);
 
-    // Формируем innerHTML для блока результатов согласно ТЗ
+    // Формирование innerHTML строки для вывода результата по ТЗ
     let resultHtml = 'Выбрано услуг: ' + report.count + '<br>Итого: ' + report.total + ' руб.';
     report.items.forEach(function(item) {
         resultHtml += '<br>' + item.title;
@@ -135,7 +134,7 @@ serviceForm.addEventListener('submit', function(event) {
     resultBlock.innerHTML = resultHtml;
     resultBlock.hidden = false;
 
-    // Превращаем отчет в JSON-строку и проверяем её через JSON.parse() перед выводом
+    // Перевод отчета в строку, проверка через JSON.parse() и вывод в report-json
     const jsonString = JSON.stringify(report);
     try {
         JSON.parse(jsonString); 
