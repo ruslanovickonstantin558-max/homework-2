@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Конструктор посещения события</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="card">
+        <!-- Блок с информацией о событии -->
+        <h1 id="event-title"></h1>
+        <p id="event-date"></p>
+        <p id="event-place"></p>
+        <p id="event-description"></p>
+
+        <!-- Кнопка и блок программы -->
+        <button id="show-program">Показать программу</button>
+        <div id="program" hidden></div>
+
+        <!-- Сообщения об ошибках -->
+        <div id="data-error" class="error-box" hidden>Ошибка данных.</div>
+        <div id="choice-error" class="error-box" hidden>Выберите хотя бы одну услугу.</div>
+
+        <!-- Форма выбора услуг -->
+        <form id="service-form" class="form-container" hidden>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="guide"> <span id="label-guide"></span>
+                </label>
+            </div>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="audio"> <span id="label-audio"></span>
+                </label>
+            </div>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="catalog"> <span id="label-catalog"></span>
+                </label>
+            </div>
+            <button type="submit">Рассчитать стоимость</button>
+        </form>
+
+        <!-- Результаты расчета -->
+        <div id="result" class="result-box" hidden></div>
+        <div id="report-json" class="json-box" hidden></div>
+    </div>
+
+    <script href="app.js" src="app.js"></script>
+</body>
+</html>
